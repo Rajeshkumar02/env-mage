@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+*.js
+coverage
+__tests__
+examples
+.prettierrc
+tsconfig.json

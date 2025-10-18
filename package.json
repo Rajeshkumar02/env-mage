@@ -1,0 +1,60 @@
+{
+  "name": "env-mage",
+  "version": "1.1.0",
+  "description": "CLI for managing .env files - init, validate, sync, diff, typegen, scan, lint, encrypt",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "env-mage": "bin/env-mage.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "src"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsup",
+    "start": "node bin/env-mage.js",
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist bin node_modules",
+    "prepublishOnly": "npm run test && npm run build",
+    "publish:npm": "npm run test && npm run build && npm publish"
+  },
+  "keywords": [
+    "env",
+    "environment",
+    ".env",
+    "cli",
+    "validation",
+    "sync",
+    "encrypt",
+    "dotenv"
+  ],
+  "author": "Rajeshkumar S <dev.rajeshkumars@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "kleur": "^4.1.5",
+    "dotenv": "^16.3.1",
+    "diff": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/diff": "^5.2.0",
+    "@types/node": "^20.10.6",
+    "@vitest/ui": "^1.1.0",
+    "@vitest/coverage-v8": "^1.1.0",
+    "typescript": "^5.3.3",
+    "tsup": "^8.0.1",
+    "vitest": "^1.1.0",
+    "tsx": "^4.7.0"
+  },
+  "types": "./dist/index.d.ts"
+}
