@@ -7,6 +7,17 @@
   "bin": {
     "env-mage": "bin/env-mage.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rajeshkumar02/env-mage"
+  },
+  "homepage": "https://the-cerebrix.vercel.app/env-mage",
+  "contributors": [
+    {
+      "name": "Rajeshkumar S",
+      "url": "https://github.com/Rajeshkumar02"
+    }
+  ],
   "files": [
     "dist",
     "bin",
