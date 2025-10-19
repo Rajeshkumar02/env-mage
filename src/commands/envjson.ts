@@ -7,7 +7,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { parseEnvContent } from '../utils/envParser';
 import { logger } from '../utils/logger';
-import { detectValueType, convertStringToTypedValue, generateTypeScriptInterface } from '../utils/typeUtils';
+import {
+  detectValueType,
+  convertStringToTypedValue,
+  generateTypeScriptInterface,
+} from '../utils/typeUtils';
 
 interface Result {
   success: boolean;
@@ -37,14 +41,14 @@ export function envJsonCommand(options: Partial<EnvJsonOptions> = {}): Result {
       includeValues = false,
       typeOutput,
       detectTypes = false,
-      format = 'json'
+      format = 'json',
     } = options;
 
     // Resolve paths
     const resolvedEnvPath = path.resolve(process.cwd(), envPath);
     const resolvedOutputPath = path.resolve(process.cwd(), outputPath);
     let resolvedTypeOutputPath: string | undefined;
-    
+
     if (typeOutput) {
       resolvedTypeOutputPath = path.resolve(process.cwd(), typeOutput);
     }
@@ -63,7 +67,7 @@ export function envJsonCommand(options: Partial<EnvJsonOptions> = {}): Result {
 
     // Create structure for the output
     const jsonStructure: Record<string, any> = {};
-    
+
     for (const [key, value] of Object.entries(envVars)) {
       if (!includeValues) {
         // If not including values, use null placeholders
@@ -76,7 +80,7 @@ export function envJsonCommand(options: Partial<EnvJsonOptions> = {}): Result {
         jsonStructure[key] = value;
       }
     }
-    
+
     // Generate output based on format
     let outputContent = '';
     switch (format) {
@@ -96,27 +100,30 @@ module.exports = ${JSON.stringify(jsonStructure, null, 2)};
 
     // Write to output file
     fs.writeFileSync(resolvedOutputPath, outputContent);
-    
+
     // Generate TypeScript interface if requested
     if (resolvedTypeOutputPath) {
-      const interfaceName = path.basename(resolvedTypeOutputPath, path.extname(resolvedTypeOutputPath))
+      const interfaceName = path
+        .basename(resolvedTypeOutputPath, path.extname(resolvedTypeOutputPath))
         .replace(/[^a-zA-Z0-9_]/g, '_')
         .replace(/^[0-9]/, '_$&');
-        
+
       const tsInterface = generateTypeScriptInterface(
-        envVars, 
-        interfaceName.charAt(0).toUpperCase() + interfaceName.slice(1) + 'Env', 
+        envVars,
+        interfaceName.charAt(0).toUpperCase() + interfaceName.slice(1) + 'Env',
         detectTypes
       );
-      
+
       fs.writeFileSync(resolvedTypeOutputPath, tsInterface);
-      
+
       return {
         success: true,
-        message: `✅ Created ${outputPath} with ${Object.keys(jsonStructure).length} keys and generated TypeScript interface at ${typeOutput}`,
+        message: `✅ Created ${outputPath} with ${
+          Object.keys(jsonStructure).length
+        } keys and generated TypeScript interface at ${typeOutput}`,
       };
     }
-    
+
     return {
       success: true,
       message: `✅ Created ${outputPath} with ${Object.keys(jsonStructure).length} keys`,
