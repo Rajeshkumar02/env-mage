@@ -344,18 +344,36 @@ export const getDifferentKeys = (env1: EnvObject, env2: EnvObject): string[] => 
 };
 
 /**
- * Extract variables used from a string (like process.env.VAR)
- * Useful for scanning code
- *
+ * Extract variables used from a string (like process.env.VAR or process?.env?.VAR)
+ * Handles standard and optional chaining syntax
+ * 
  * @param code - Code string to scan
  * @returns Array of variable names found
  */
 export const extractVariablesFromCode = (code: string): string[] => {
-  const matches = code.match(PATTERNS.PROCESS_ENV);
-  if (!matches) {
+  // First try the standard pattern
+  const standardMatches = code.match(PATTERNS.PROCESS_ENV) || [];
+  
+  // Then try optional chaining pattern
+  const optionalMatches = code.match(PATTERNS.PROCESS_ENV_OPTIONAL) || [];
+  
+  // Combine all matches
+  const allMatches = [...standardMatches, ...optionalMatches];
+  
+  if (allMatches.length === 0) {
     return [];
   }
 
+  // Process the matches to extract variable names and remove duplicates
+  const variables = allMatches.map(match => {
+    // Extract the variable name by finding the last dot and taking everything after it
+    const lastDotIndex = match.lastIndexOf('.');
+    if (lastDotIndex !== -1) {
+      return match.substring(lastDotIndex + 1);
+    }
+    return match.replace(/^process\.?env\.?/, '').replace(/\?/g, '');
+  });
+
   // Remove duplicates
-  return Array.from(new Set(matches.map((match) => match.replace('process.env.', ''))));
+  return Array.from(new Set(variables));
 };

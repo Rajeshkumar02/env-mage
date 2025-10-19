@@ -18,6 +18,12 @@ export const PATTERNS = {
    * Captures: process.env.VARIABLE_NAME
    */
   PROCESS_ENV: /process\.env\.([A-Z_][A-Z0-9_]*)/g,
+  
+  /**
+   * Match environment variable access with optional chaining (process?.env?.VARIABLE or variations)
+   * Captures all variations: process?.env?.VAR, process?.env.VAR, process.env?.VAR
+   */
+  PROCESS_ENV_OPTIONAL: /process\??\.env\??\.\??([A-Z_][A-Z0-9_]*)/g,
 
   /**
    * Match .env file line (KEY=VALUE)

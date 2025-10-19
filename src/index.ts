@@ -12,6 +12,7 @@ import { diffCommand } from './commands/diff';
 import { typegenCommand } from './commands/typegen';
 import { scanCommand } from './commands/scan';
 import { lintCommand } from './commands/lint';
+import { envJsonCommand } from './commands/envjson';
 
 const version = '1.1.0';
 
@@ -24,7 +25,7 @@ export const createProgram = (): Command => {
   program
     .name('env-mage')
     .description(
-      'CLI for managing .env files - init, validate, sync, diff, typegen, scan, lint, encrypt'
+      'CLI for managing .env files - init, validate, sync, diff, typegen, scan, lint, json'
     )
     .version(version)
     .helpOption('-h, --help', 'Display help for command');
@@ -333,6 +334,30 @@ export const createProgram = (): Command => {
         process.exit(1);
       }
     });
+    
+  // EnvJSON command - Generate JSON from .env file
+  program
+    .command('json')
+    .description('Generate a JSON structure from .env file')
+    .option('-e, --env <file>', 'Path to .env file', '.env')
+    .option('-o, --output <file>', 'Path to output JSON file', '.env.json')
+    .option('-v, --values', 'Include actual values instead of null placeholders', false)
+    .action(async (options) => {
+      try {
+        const result = envJsonCommand(options.env, options.output, options.values);
+
+        if (result.success) {
+          logger.success(result.message);
+        } else {
+          logger.error(result.message);
+          process.exit(1);
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        logger.error(`JSON command failed: ${message}`);
+        process.exit(1);
+      }
+    });
 
   // Help for main command
   program.on('--help', () => {
@@ -342,6 +367,8 @@ export const createProgram = (): Command => {
     console.log('  $ env-mage validate                          Check .env against .env.example');
     console.log('  $ env-mage init -e .env.production           Use custom .env file');
     console.log('  $ env-mage validate --strict                 Fail on any mismatch');
+    console.log('  $ env-mage json                              Generate JSON from .env file');
+    console.log('  $ env-mage json --values                     Include actual values in JSON output');
   });
 
   return program;
