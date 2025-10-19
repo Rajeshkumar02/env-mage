@@ -1,6 +1,6 @@
 {
   "name": "env-mage",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "CLI for managing .env files - init, validate, sync, diff, typegen, scan, lint, encrypt",
   "type": "module",
   "main": "dist/index.js",
@@ -21,7 +21,7 @@
   "files": [
     "dist",
     "bin",
-    "src"
+    "README.md"
   ],
   "engines": {
     "node": ">=18.0.0"
@@ -35,9 +35,10 @@
     "test:watch": "vitest",
     "test:coverage": "vitest --coverage",
     "lint": "tsc --noEmit",
-    "clean": "rm -rf dist bin node_modules",
-    "prepublishOnly": "npm run test && npm run build",
-    "publish:npm": "npm run test && npm run build && npm publish"
+    "clean": "rm -rf dist node_modules",
+    "prepublishOnly": "pnpm run test && pnpm run build",
+    "postinstall": "node -e \"try { require('fs').chmodSync('./bin/env-mage.js', '755') } catch (e) {}\"",
+    "publish:npm": "pnpm run test && pnpm run build && pnpm publish"
   },
   "keywords": [
     "env",
