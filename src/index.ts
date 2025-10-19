@@ -14,7 +14,7 @@ import { scanCommand } from './commands/scan';
 import { lintCommand } from './commands/lint';
 import { envJsonCommand } from './commands/envjson';
 
-const version = '1.1.0';
+const version = '1.3.0';
 
 /**
  * Create and configure the main CLI program
@@ -334,7 +334,7 @@ export const createProgram = (): Command => {
         process.exit(1);
       }
     });
-    
+
   // EnvJSON command - Generate JSON from .env file
   program
     .command('json')
@@ -342,9 +342,19 @@ export const createProgram = (): Command => {
     .option('-e, --env <file>', 'Path to .env file', '.env')
     .option('-o, --output <file>', 'Path to output JSON file', '.env.json')
     .option('-v, --values', 'Include actual values instead of null placeholders', false)
+    .option('-t, --types <file>', 'Generate TypeScript interface to specified file')
+    .option('-d, --detect-types', 'Detect and use proper types for values', false)
+    .option('-f, --format <format>', 'Output format: json, esm, commonjs', 'json')
     .action(async (options) => {
       try {
-        const result = envJsonCommand(options.env, options.output, options.values);
+        const result = envJsonCommand({
+          envPath: options.env,
+          outputPath: options.output,
+          includeValues: options.values,
+          typeOutput: options.types,
+          detectTypes: options.detectTypes,
+          format: options.format,
+        });
 
         if (result.success) {
           logger.success(result.message);
@@ -368,7 +378,13 @@ export const createProgram = (): Command => {
     console.log('  $ env-mage init -e .env.production           Use custom .env file');
     console.log('  $ env-mage validate --strict                 Fail on any mismatch');
     console.log('  $ env-mage json                              Generate JSON from .env file');
-    console.log('  $ env-mage json --values                     Include actual values in JSON output');
+    console.log(
+      '  $ env-mage json --values                     Include actual values in JSON output'
+    );
+    console.log('  $ env-mage json --types env.d.ts             Generate TypeScript interface');
+    console.log(
+      '  $ env-mage json --detect-types --format esm  Create ESM module with typed values'
+    );
   });
 
   return program;
