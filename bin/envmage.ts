@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * EnvWizard CLI - Executable Entry Point
- * This file is called when running: envwizard [command]
+ * EnvMage CLI - Executable Entry Point
+ * This file is called when running: EnvMage [command]
  */
 
 import { runCLI } from '../src/index';

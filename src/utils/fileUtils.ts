@@ -109,7 +109,7 @@ export const fileExists = (filePath: string): boolean => {
  * @param prefix - Optional prefix for temp directory name
  * @returns Path to a temporary directory
  */
-export const getTempDir = (prefix: string = 'envwizard-'): string => {
+export const getTempDir = (prefix: string = 'envmage-'): string => {
   const baseTemp = tmpdir();
   return join(baseTemp, `${prefix}${Date.now()}-${Math.floor(Math.random() * 10000)}`);
 };
